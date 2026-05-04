@@ -25,7 +25,7 @@ export default function NotificationItemComponent({ item }: Props) {
 				>
 					{TYPE_LABELS[item.type]}
 				</span>
-				<span className={styles['item-pet']}>{item.title}</span>
+				<span className={styles['item-title']}>{item.title}</span>
 				<span className={styles['item-time']}>
 					{dayjs(item.timestamp).fromNow()}
 				</span>
