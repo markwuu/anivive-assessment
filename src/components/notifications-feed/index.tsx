@@ -1,18 +1,38 @@
-import { getNotifications } from "@/lib/notifications";
-import NotificationItemComponent from "./notifications-item";
-import styles from "./notifications-feed.module.scss";
+'use client';
 
-export default async function NotificationFeed() {
-	const items = await getNotifications();
+import NotificationItemComponent from './notifications-item';
+import styles from './notifications-feed.module.scss';
+import type { Notification } from '@/types';
+import { useState } from 'react';
 
-	if (items.length === 0) {
-		return <p className={styles["empty-state"]}>No recent activity.</p>;
+type Props = {
+	items: Notification[];
+};
+
+export default function NotificationFeed({ items }: Props) {
+	const [notifications, setNotifications] = useState<Notification[]>(items);
+	const unreadCount = notifications.reduce(
+		(count, notif) => count + (notif.read ? 0 : 1),
+		0,
+	);
+
+	if (notifications.length === 0) {
+		return <p className={styles['empty-state']}>No recent activity.</p>;
 	}
 
 	return (
-		<ul className={styles["feed-list"]}>
-			{items.map((item) => (
-				<NotificationItemComponent key={item.id} item={item} />
+		<ul className={styles['feed-list']}>
+			{unreadCount === 0 ? (
+				<h2>All caught up!</h2>
+			) : (
+				<h2>Unread notifications ({unreadCount})</h2>
+			)}
+			{notifications.map((notification) => (
+				<NotificationItemComponent
+					key={notification.id}
+					item={notification}
+					setNotifications={setNotifications}
+				/>
 			))}
 		</ul>
 	);
